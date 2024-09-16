@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassType;
-use App\Models\ScheduledClass;
 use Illuminate\Http\Request;
+use App\Models\ScheduledClass;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduledClassController extends Controller
 {
@@ -31,9 +32,11 @@ class ScheduledClassController extends Controller
     public function store(Request $request)
     {
         $date_time = $request->date . ' ' . $request->time;
+        /** @var User $user */
+        $user = Auth::user();
         $request->merge([
             'date_time' => $date_time,
-            'instructor_id' => auth()->id()
+            'instructor_id' => $user->id
         ]);
         $validated = $request->validate([
             'class_type_id' => 'required',
