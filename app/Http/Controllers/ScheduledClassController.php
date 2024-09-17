@@ -85,7 +85,7 @@ class ScheduledClassController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
-        if($user->id !== $schedule->instructor_id) {
+        if($user->cannot('delete', $schedule)) {
             abort(403);
         }
 
