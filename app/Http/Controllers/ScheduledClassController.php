@@ -6,6 +6,7 @@ use App\Models\ClassType;
 use Illuminate\Http\Request;
 use App\Models\ScheduledClass;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ScheduledClassController extends Controller
 {
@@ -13,8 +14,14 @@ class ScheduledClassController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
+    {   
+        /** @var User $user */
+        $user = Auth::user();
+        $scheduledClasses = $user->scheduledClasses()
+            ->where('date_time', '>=', now())
+            ->oldest('date_time')
+            ->get();
+        return view('instructor.upcoming')->with('scheduledClasses', $scheduledClasses);
     }
 
     /**
@@ -44,7 +51,7 @@ class ScheduledClassController extends Controller
             'date_time' => 'required|unique:scheduled_classes,date_time|after:now',
         ]);
         ScheduledClass::create($validated);
-        return redirect()->route('instructor.dashboard')->with('success', 'Class scheduled successfully');
+        return redirect()->route('schedule.index')->with('success', 'Class scheduled successfully');
     }
 
     /**
@@ -74,8 +81,15 @@ class ScheduledClassController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ScheduledClass $scheduledClass)
+    public function destroy(ScheduledClass $schedule)
     {
-        //
+        /** @var User $user */
+        $user = Auth::user();
+        if($user->id !== $schedule->instructor_id) {
+            abort(403);
+        }
+
+        $schedule->delete();
+        return redirect()->route('schedule.index')->with('success', 'Class deleted successfully');
     }
 }
