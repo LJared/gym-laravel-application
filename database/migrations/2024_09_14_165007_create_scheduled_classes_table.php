@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('scheduled_classes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('instructor_id')->constrained('users');
-            $table->foreignIdFor(ClassType::class);
+            $table->foreignIdFor(ClassType::class)->constrained();
             $table->datetime('date_time')->unique();
             $table->timestamps();
         });
