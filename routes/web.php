@@ -28,7 +28,7 @@ Route::prefix('/member')->middleware(['auth', 'role:member'])->group(function ()
     Route::get('/book', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('booking.store');
     Route::get('/bookings', [BookingController::class, 'index'])->name('booking.index');
-    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('booking.destroy');
+    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('booking.destroy');
 });
 
 Route::get('/admin/dashboard', function () {
