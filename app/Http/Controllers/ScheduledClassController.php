@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassType;
 use Illuminate\Http\Request;
 use App\Models\ScheduledClass;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +19,7 @@ class ScheduledClassController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $scheduledClasses = $user->scheduledClasses()
-            ->where('date_time', '>=', now())
+            ->upcoming()
             ->oldest('date_time')
             ->get();
         return view('instructor.upcoming')->with('scheduledClasses', $scheduledClasses);
