@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
+use App\Notifications\RemindMembersNotification;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class RemindMembers extends Command
 {
@@ -32,6 +34,6 @@ class RemindMembers extends Command
             })
             ->select('name', 'email')
             ->get();
-        $this->table(['Name', 'Email'], $members->toArray());
+        Notification::send($members, new RemindMembersNotification());
     }
 }
