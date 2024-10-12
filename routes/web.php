@@ -10,15 +10,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', DashboardController::class)->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', DashboardController::class)
+    ->middleware(['auth'])->name('dashboard');
 
-Route::get('/instructor/dashboard', function () {
-    return view('instructor.dashboard');
-})->middleware(['auth', 'role:instructor'])->name('instructor.dashboard');
-
-Route::resource('/instructor/schedule', ScheduledClassController::class)
-    ->only(['index', 'create', 'store', 'edit', 'destroy'])
-    ->middleware(['auth', 'role:instructor']);
+Route::prefix('/instructor')->middleware(['auth', 'role:instructor'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('instructor.dashboard');
+    })->name('instructor.dashboard');
+    Route::resource('/schedule', ScheduledClassController::class)
+        ->only(['index', 'create', 'store', 'edit', 'destroy']);
+});
 
 /* Member routes */
 Route::prefix('/member')->middleware(['auth', 'role:member'])->group(function () {
